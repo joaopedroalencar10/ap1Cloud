@@ -1,0 +1,16 @@
+
+<div class="post-container" *ngIf="posts && posts.length > 0">
+  <mat-card class="post" *ngFor="let item of posts">
+    <mat-card-header>
+      <mat-card-title>{{item.nomeMarca}}</mat-card-title>
+      <mat-card-subtitle>Site:{{item.site}}</mat-card-subtitle>
+      <mat-card-subtitle>Contato:{{item.contato}}</mat-card-subtitle>
+      <mat-card-subtitle>País:{{item.pais}}</mat-card-subtitle>
+      <mat-card-content style="margin: 25px 0 25px 0;"></mat-card-content>
+    </mat-card-header>
+    <img mat-card-image src="{{item.urlFoto}}" width="200px" height="200px"  alt="" />
+    <mat-card-actions>
+      <button mat-button (click)="redirectToDetail(item.id)">Ver Marca</button>
+    </mat-card-actions>
+  </mat-card>
+  </div>

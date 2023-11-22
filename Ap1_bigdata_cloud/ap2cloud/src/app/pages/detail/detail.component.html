@@ -1,0 +1,32 @@
+<mat-card class="post-detail-card">
+  <mat-card-header>
+    <div mat-card-avatar class="post-detail-image"></div>
+    <mat-card-title>{{marcas?.nomeMarca}}</mat-card-title>
+    <mat-card-subtitle>Site:{{marcas?.site}}</mat-card-subtitle>
+    <mat-card-subtitle>País:{{marcas?.pais}}</mat-card-subtitle>
+    <mat-card-subtitle>Contato:{{marcas?.contato}}</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image width="500px" height="500px" [src]="marcas?.urlFoto" alt="">
+  <mat-card-content style="margin: 25px 0 25px 0;">
+  </mat-card-content>
+</mat-card>
+<br />
+<h1>Produtos da marca</h1>
+<mat-card *ngFor="let item of produtos">
+  <mat-card-header>
+
+
+  </mat-card-header>
+  <mat-card-content style="margin: 25px 0 25px 0;">
+      <mat-card-title>Nome:{{item.nomeProduto}}</mat-card-title>
+      <mat-card-subtitle> Preço:{{item.preco}}</mat-card-subtitle>
+      <mat-card-subtitle> Categoria:{{item.categoria}}</mat-card-subtitle>
+      <mat-card-subtitle> Descrição::{{item.descricao}}</mat-card-subtitle>
+  </mat-card-content>
+</mat-card>
+<button mat-flat-button color="primary" (click)="mostrarCriarProduto()">Novo Produto</button>
+<div *ngIf="showCriarProdutos == true">
+  <app-create-produtos [idMarca]="marcas?.id" (newProdutosEvent)="atualizarProduto()"></app-create-produtos>
+</div>
+
+<a routerLink="/">Ver todas as Marcas</a>

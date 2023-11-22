@@ -47,7 +47,8 @@ public class Produtos {
     public void setPreco(String preco) {
         this.preco = preco;
     }
-
+     
+  
     @Column(nullable = false)
     @NotBlank(message = "O campo categoria não pode ser vazio")
     private String categoria;
@@ -69,8 +70,9 @@ public class Produtos {
     }
 
     @Column(nullable = false)
-     @NotBlank(message = "O campo descricao não pode ser vazio")
+    @NotBlank(message = "O campo descricao não pode ser vazio")
     private String descricao;
+
 
   
 }

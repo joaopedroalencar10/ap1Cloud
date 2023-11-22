@@ -44,6 +44,18 @@ public class Marcas {
     }
 
 
+    @Column(nullable = true)
+    private String urlFoto;
+
+    public String geturlFoto() {
+        return urlFoto;
+    }
+
+    public void seturlFoto(String urlFoto) {
+        this.urlFoto = urlFoto;
+    }
+
+
     @Column(length = 200, nullable = false)
     @NotBlank(message = "O campo país não pode ser vazio")
     private String pais;
@@ -98,4 +110,6 @@ public class Marcas {
     public void addProdutos(Produtos Produtos){
         this.produtos.add(Produtos);
     }
+
+  
 }

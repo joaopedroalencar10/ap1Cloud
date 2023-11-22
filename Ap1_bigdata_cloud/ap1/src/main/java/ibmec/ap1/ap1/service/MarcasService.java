@@ -5,59 +5,90 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import ibmec.ap1.ap1.exception.MarcasException;
 import ibmec.ap1.ap1.model.Marcas;
 import ibmec.ap1.ap1.repository.MarcasRepository;
 
 @Service
 public class MarcasService {
+ @Autowired
+    MarcasRepository marcasRepository;
 
     @Autowired
-    private MarcasRepository _marcasRepository;
+    private AzureStorageAccountService azureStorageAccountService;
 
     public List<Marcas> findAll() {
-        return this._marcasRepository.findAll();
+        return this.marcasRepository.findAll();
     }
 
     public Optional<Marcas> findById(long id) {
-        return this._marcasRepository.findById(id);
+        return this.marcasRepository.findById(id);
     }
 
-    public Marcas save(Marcas marcas) throws Exception {
-        if (this._marcasRepository.countByNomeMarca(marcas.getNomeMarca()) > 0) {
-            throw new Exception("Este nome já existe na base de dados");
+    public List<Marcas> getAll() {
+        return this.marcasRepository.findAll();
+    }
+
+    public void saveOrUpdate(Marcas item) {
+        this.marcasRepository.save(item);
+    }
+
+    public Marcas create(Marcas marcas) {
+
+        if (marcas.geturlFoto() == null) {
+            marcas.seturlFoto("https://dummyimage.com/300");
         }
-        this._marcasRepository.save(marcas);
-        return marcas;
+
+        return this.marcasRepository.save(marcas);
     }
 
-    public Marcas update(long id, Marcas newData) throws Exception {
-        Optional<Marcas> result = this._marcasRepository.findById(id);
+    public Marcas salvarNovoProduto(Marcas newData) 
+    {
+        return this.marcasRepository.save(newData);
+    }
 
-        if (result.isPresent() == false) {
-            throw new Exception("Não encontrei a Marcas a ser atualizada");
+    public Marcas update(long id, Marcas newData) throws MarcasException{
+        Optional<Marcas> existingItemOptional = marcasRepository.findById(id);
+
+        if (existingItemOptional.isPresent() == false)
+            throw new MarcasException("Não encontrei o marcas a ser atualizado");
+
+        Marcas existingItem = existingItemOptional.get();
+
+        existingItem.setNomeMarca(newData.getNomeMarca());
+        existingItem.setPais(newData.getPais());
+        existingItem.setContato(newData.getContato());
+        existingItem.setSite(newData.getSite());
+        marcasRepository.save(existingItem);
+        return existingItem;
+    }
+
+    public void delete(long id) throws MarcasException {
+        Optional<Marcas> endereco = this.marcasRepository.findById(id);
+
+        if (endereco.isPresent() == false)
+            throw new MarcasException("Não encontrei o endereco a ser atualizado");
+
+        this.marcasRepository.delete(endereco.get());
+    }
+
+    public void saveComentario(Marcas marcas) {
+        this.marcasRepository.save(marcas);
+    }
+
+    public void uploadFileToMarcas(MultipartFile file, long id) throws MarcasException, Exception {
+        
+        Optional<Marcas> opMarcas = this.marcasRepository.findById(id);
+        
+        if (opMarcas.isPresent() == false) {
+            throw new MarcasException("Não encontrei o marcas a ser atualizado");
         }
 
-        Marcas marcasASerAtualizada = result.get();
-        marcasASerAtualizada.setNomeMarca(newData.getNomeMarca());
-        marcasASerAtualizada.setPais(newData.getPais());
-        marcasASerAtualizada.setContato(newData.getContato());
-         marcasASerAtualizada.setSite(newData.getSite());
-        this._marcasRepository.save(marcasASerAtualizada);
-        return marcasASerAtualizada;
-    }
-
-    public void delete(long id) throws Exception {
-        Optional<Marcas> marcasASerExcluida = this._marcasRepository.findById(id);
-        // Não achei as Marcas a ser excluida
-        if (marcasASerExcluida.isPresent() == false) {
-            throw new Exception("Não encontrei a Marcas a ser atualizada");
-        }
-        this._marcasRepository.delete(marcasASerExcluida.get());
-    }
-
-    public void saveProdutos(Marcas marcas) {
-        this._marcasRepository.save(marcas);
+        Marcas marcas = opMarcas.get();
+        String ulrImage = this.azureStorageAccountService.uploadFileToAzure(file);
+        marcas.seturlFoto(ulrImage);
+        this.marcasRepository.save(marcas);
     }
 
 }
