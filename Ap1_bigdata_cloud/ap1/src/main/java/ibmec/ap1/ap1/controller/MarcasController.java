@@ -1,5 +1,6 @@
 package ibmec.ap1.ap1.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,23 +27,29 @@ import ibmec.ap1.ap1.service.MarcasService;
 @RestController
 @RequestMapping("/marcas")
 @CrossOrigin
-public class MarcasController {
-    
-     @Autowired
+class MarcasController {
+
+    @Autowired
     MarcasService marcasService;
 
     @GetMapping
     public ResponseEntity<List<Marcas>> getAll() {
         try {
-            return new ResponseEntity<>(marcasService.findAll(), HttpStatus.OK);
+            List<Marcas> items = new ArrayList<Marcas>();
+
+            marcasService.getAll().forEach(items::add);
+
+            if (items.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(items, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
     @GetMapping("{id}")
-    public ResponseEntity<Marcas> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<Marcas> getById(@PathVariable("id") long id) {
         Optional<Marcas> existingItemOptional = marcasService.findById(id);
 
         if (existingItemOptional.isPresent()) {
@@ -52,26 +59,25 @@ public class MarcasController {
         }
     }
 
-    @PostMapping()
-    public ResponseEntity<Marcas> create(@RequestBody Marcas marcas) throws MarcasException{
-     
-            Marcas savedItem= marcasService.create(marcas);
-            return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<Marcas> create(@RequestBody Marcas item) throws MarcasException {
+        Marcas savedItem = marcasService.create(item);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Marcas> update(@PathVariable("id") Long id, @RequestBody Marcas item) throws MarcasException{
+    public ResponseEntity<Marcas> update(@PathVariable("id") long id, @RequestBody Marcas item) throws MarcasException {
         return new ResponseEntity<>(marcasService.update(id, item), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id)  throws MarcasException {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) throws MarcasException {
         marcasService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    
-    @PostMapping("{id}/file")
-    public ResponseEntity<String> uploadMarcasImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file)  throws MarcasException, Exception{
+
+    @PostMapping("{id}")
+    public ResponseEntity<String> uploadMarcasImage(@PathVariable("id") long id, @RequestParam("file") MultipartFile file) throws MarcasException, Exception {
         marcasService.uploadFileToMarcas(file, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

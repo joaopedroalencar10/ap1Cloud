@@ -3,6 +3,7 @@ ibmec\ap1\ap1\errorHandler\ErrorHandlingController.class
 ibmec\ap1\ap1\service\MarcasService.class
 ibmec\ap1\ap1\errorHandler\ValidationErrorResponse.class
 ibmec\ap1\ap1\ApiDocumentationConfiguration.class
+ibmec\ap1\ap1\controller\resourceNameController.class
 ibmec\ap1\ap1\errorHandler\Validation.class
 ibmec\ap1\ap1\exception\MarcasException.class
 ibmec\ap1\ap1\repository\MarcasRepository.class
@@ -15,4 +16,3 @@ ibmec\ap1\ap1\errorHandler\BussinesError.class
 ibmec\ap1\ap1\model\Marcas.class
 ibmec\ap1\ap1\model\Produtos.class
 ibmec\ap1\ap1\Ap1Application.class
-ibmec\ap1\ap1\controller\ProdutosController.class

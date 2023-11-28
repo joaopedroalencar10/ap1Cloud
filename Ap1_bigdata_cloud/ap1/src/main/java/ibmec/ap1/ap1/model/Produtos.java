@@ -1,11 +1,15 @@
 package ibmec.ap1.ap1.model;
 
 
+import com.azure.core.annotation.Post;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -72,6 +76,19 @@ public class Produtos {
     @Column(nullable = false)
     @NotBlank(message = "O campo descricao não pode ser vazio")
     private String descricao;
+
+    @ManyToOne
+    @JsonIgnore
+    private Marcas marcas;
+
+    public Marcas getMarcas() {
+        return marcas;
+    }
+
+    public void setMarcas(Marcas marcas) {
+        this.marcas = marcas;
+    }
+
 
 
   

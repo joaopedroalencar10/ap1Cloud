@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: ibmec.ap1.ap1.Ap1ApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.936 s - in ibmec.ap1.ap1.Ap1ApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 19.435 s - in ibmec.ap1.ap1.Ap1ApplicationTests

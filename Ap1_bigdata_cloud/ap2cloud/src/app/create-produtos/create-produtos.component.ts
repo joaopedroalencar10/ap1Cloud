@@ -27,9 +27,6 @@ export class CreateProdutosComponent {
 
     let produtos: ProdutosModel = {
       nomeProduto: this.produtos.value as string,
-      categoria: this.produtos.value as string,
-      descricao: this.produtos.value as string,
-      preco: this.produtos.value as string,
     };
 
     this.produtosService.createProdutos(this.idMarca, produtos).subscribe(response => {

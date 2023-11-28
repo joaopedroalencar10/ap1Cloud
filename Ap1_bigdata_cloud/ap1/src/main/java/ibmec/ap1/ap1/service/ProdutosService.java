@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import ibmec.ap1.ap1.model.Produtos;
 import ibmec.ap1.ap1.repository.ProdutosRepository;
-import ibmec.ap1.ap1.exception.MarcasException;
 import ibmec.ap1.ap1.exception.ProdutosException;
 import ibmec.ap1.ap1.model.Marcas;
 
@@ -48,7 +47,7 @@ public class ProdutosService {
             return produtos;
         }
         
-        public Produtos save(long idMarcas, Produtos item) throws ProdutosException, MarcasException {
+        public Produtos save(long idMarcas, Produtos item) throws ProdutosException {
             Optional<Marcas> opMarcas = this.marcasService.findById(idMarcas);
     
             if (opMarcas.isPresent() == false) {
@@ -56,12 +55,9 @@ public class ProdutosService {
             }
     
             Marcas marcas = opMarcas.get();
-
-            //Adiciona um novo produto na marca
-            marcas.getProdutos().add(item);
-            
-            //Atualiza a marca com o novo produto
-            this.marcasService.salvarNovoProduto(marcas);
+            item.setMarcas(marcas);
+            this.repository.save(item);
+           
            
             return item;
         }

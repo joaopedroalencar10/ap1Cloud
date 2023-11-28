@@ -18,27 +18,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ibmec.ap1.ap1.exception.MarcasException;
 import ibmec.ap1.ap1.exception.ProdutosException;
+import ibmec.ap1.ap1.model.Marcas;
 import ibmec.ap1.ap1.model.Produtos;
+import ibmec.ap1.ap1.service.MarcasService;
 import ibmec.ap1.ap1.service.ProdutosService;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/marcas/{idMarca}/produtos")
 @CrossOrigin
-public class ProdutosController {
+class resourceNameController {
+
     @Autowired
     ProdutosService produtosService;
 
+    @Autowired MarcasService marcasService;
+
     @GetMapping
-    public ResponseEntity<List<Produtos>> getAll() {
+    public ResponseEntity<List<Produtos>> getAll(@PathVariable("idMarca") long idMarca) {
         try {
-            return new ResponseEntity<>(produtosService.findAll(), HttpStatus.OK);
+            Optional<Marcas> opMarca= this.marcasService.findById(idMarca);
+
+            if (opMarca.isPresent() == false) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);    
+            }
+
+            return new ResponseEntity<>(opMarca.get().getProdutos(), HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Produtos> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<Produtos> getById(@PathVariable("id") long id) {
         Optional<Produtos> existingItemOptional = produtosService.findById(id);
 
         if (existingItemOptional.isPresent()) {
@@ -48,22 +60,20 @@ public class ProdutosController {
         }
     }
 
-    @PostMapping("{idMarca}")
-    public ResponseEntity<Produtos> create(@PathVariable("idMarca") long idMarca, @RequestBody Produtos produtos) throws Exception{
-            Produtos savedItem = this.produtosService.save(idMarca, produtos);
-            return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<Produtos> create(@PathVariable("idMarca") long idMarca, @RequestBody Produtos item) throws ProdutosException, MarcasException{
+        Produtos savedItem = produtosService.save(idMarca, item);
+        return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }
-   
-    @PutMapping("{id}")
-    public ResponseEntity<Produtos> update(@PathVariable("id") Long id, @RequestBody Produtos item) throws ProdutosException {
-        return new ResponseEntity<>(produtosService.update(id,item), HttpStatus.OK);
 
+    @PutMapping("{id}")
+    public ResponseEntity<Produtos> update(@PathVariable("id") long id, @RequestBody Produtos item) throws ProdutosException {
+        return new ResponseEntity<>(produtosService.update(id, item), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") Long id)  throws ProdutosException{
-            produtosService.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    
-}
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) throws ProdutosException {
+        produtosService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
